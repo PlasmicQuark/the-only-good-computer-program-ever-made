@@ -5,6 +5,36 @@
 # try to implement a fun game.
 
 import random
+import re
+regex = r"""^0x([0-9]|[a-f]){2}$"""
+inputRegex = re.compile(regex)
+
+def userInput():
+	notValid = True
+	while notValid:
+		address = raw_input("Provide a memory address to access of the form '0x_ _': ")
+		address.lower()
+		if inputRegex.match(address):
+			notValid = False
+		else:
+			print "Provided memory address is not valid. Try again."
+
+	return address
+
+def convertBin(binString):
+	return bin(int('1'+parts[1],16))[3:]
+
+def convertHex(hexString):
+	return int(hexString,16)
+
+def main():
+	print "Welcome to CacheSweeper."
+
+	print userInput()
+	print int(userInput(),16)
+	print int(userInput(),2)
+
+main()
 
 def cache(block, line):
 	bl = []
