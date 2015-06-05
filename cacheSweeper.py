@@ -14,6 +14,7 @@ inputRegex = re.compile(regex)
 # Global constants
 hexBase = 16
 binBase = 2
+addressOffset = 2 # the '0x' the leads every hex memory address
 
 # Designed to take in user input, make sure it is a valid memory address,
 # and return the address they provided to be used later.
@@ -32,7 +33,7 @@ def userInput():
 # Converts a hex string of the form '0x_ _' and transforms it into its
 # binary string representation.
 def convertBin(binString):
-	return bin(int(binString,hexBase))[2:].zfill(len(binString[2:])*int(math.log(hexBase,binBase)))
+	return bin(int(binString,hexBase))[addressOffset:].zfill(len(binString[addressOffset:])*int(math.log(hexBase,binBase)))
 
 # Given a string representing a hexadecimal number, converts it to its
 # base 10 integer equivalent.
