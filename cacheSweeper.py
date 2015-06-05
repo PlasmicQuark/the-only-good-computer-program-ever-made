@@ -4,6 +4,8 @@
 # This is our final project for CSc 483 - Advanced Hardware, where we
 # try to implement a fun game.
 
+import random
+
 def cache(block, line):
 	bl = []
 	for x in range (0, block):
@@ -33,8 +35,8 @@ def printCacheMem(cch, mem, memSize, line, block):
 
 size = 64
 simon = memory(size)
-block = 4
-line = 4
+block = random.randint(1, 8)
+line = random.randint(1, size/block)
 drew = cache(block, line)
 print "Memory:"
 print simon
