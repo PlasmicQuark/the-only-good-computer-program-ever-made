@@ -7,7 +7,7 @@
 def cache(block, line):
 	bl = []
 	for x in range (0, block):
-		bl.append(0)
+		bl.append(1)
 
 	ca = []
 	for x in range (0, line):
@@ -24,13 +24,21 @@ def printCache(cch):
 	print '\n'.join(map(str, cch))
 	return
 
-size = 256
+def printCacheMem(cch, mem, memSize, line, block):
+	index = 0
+	toRet = ""
+	for x in range (0, memSize):
+		index = index + 1
+	return
+
+size = 64
 simon = memory(size)
-block = 8
-line = 32
+block = 4
+line = 4
 drew = cache(block, line)
 print "Memory:"
 print simon
 print "Cache:"
 printCache(drew)
-
+print "CacheMem:"
+printCacheMem(drew, simon, size, line, block)
