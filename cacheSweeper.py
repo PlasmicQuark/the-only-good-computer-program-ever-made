@@ -1,4 +1,4 @@
-# Authors: Stephen De L'Iorio and Andrew Ivarson
+# Authors: Stephen DIorio and Andrew Ivarson
 # Date: June 2015
 #
 # This is our final project for CSc 483 - Advanced Hardware, where we
@@ -6,9 +6,17 @@
 
 import random
 import re
+import math
+
+# Regular expression statements for validating user input.
 regex = r"""^0x([0-9]|[a-f]){2}$"""
 inputRegex = re.compile(regex)
+# Global constants
+hexBase = 16
+binBase = 2
 
+# Designed to take in user input, make sure it is a valid memory address,
+# and return the address they provided to be used later.
 def userInput():
 	notValid = True
 	while notValid:
@@ -21,20 +29,15 @@ def userInput():
 
 	return address
 
+# Converts a hex string of the form '0x_ _' and transforms it into its
+# binary string representation.
 def convertBin(binString):
-	return bin(int('1'+parts[1],16))[3:]
+	return bin(int(binString,hexBase))[2:].zfill(len(binString[2:])*int(math.log(hexBase,binBase)))
 
+# Given a string representing a hexadecimal number, converts it to its
+# base 10 integer equivalent.
 def convertHex(hexString):
-	return int(hexString,16)
-
-def main():
-	print "Welcome to CacheSweeper."
-
-	print userInput()
-	print int(userInput(),16)
-	print int(userInput(),2)
-
-main()
+	return int(hexString, hexBase)
 
 def cache(block, line):
 	bl = []
@@ -74,3 +77,13 @@ print "Cache:"
 printCache(drew)
 print "CacheMem:"
 printCacheMem(drew, simon, size, line, block)
+
+def main():
+	print "Welcome to CacheSweeper."
+
+	print userInput()
+	print int(userInput(),hexBase)
+	print convertHex(userInput())
+	print convertBin(userInput())
+
+main()
