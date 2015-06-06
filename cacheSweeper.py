@@ -15,6 +15,7 @@ inputRegex = re.compile(regex)
 hexBase = 16
 binBase = 2
 addressOffset = 2 # the '0x' the leads every hex memory address
+size = 64 # how big memory can be
 
 # Designed to take in user input, make sure it is a valid memory address,
 # and return the address they provided to be used later.
@@ -40,6 +41,7 @@ def convertBin(binString):
 def convertHex(hexString):
 	return int(hexString, hexBase)
 
+# Generates a cache with each line having the number of blocks provided.
 def cache(block, line):
 	bl = []
 	for x in range (0, block):
@@ -50,12 +52,14 @@ def cache(block, line):
 		ca.append(bl)
 	return ca
 
+# Generates an empty data memory of the specified size.
 def memory(size):
 	mem = []
 	for x in range (0, size):
 		mem.append(0)
 	return mem
 
+# Prints the contents of the cache.
 def printCache(cch):
 	print '\n'.join(map(str, cch))
 	return
@@ -67,18 +71,6 @@ def printCacheMem(cch, mem, memSize, line, block):
 		index = index + 1
 	return
 
-size = 64
-simon = memory(size)
-block = random.randint(1, 8)
-line = random.randint(1, size/block)
-drew = cache(block, line)
-print "Memory:"
-print simon
-print "Cache:"
-printCache(drew)
-print "CacheMem:"
-printCacheMem(drew, simon, size, line, block)
-
 def main():
 	print "Welcome to CacheSweeper."
 
@@ -86,5 +78,17 @@ def main():
 	print int(userInput(),hexBase)
 	print convertHex(userInput())
 	print convertBin(userInput())
+
+	simon = memory(size)
+	block = random.randint(1, 8)
+	line = random.randint(1, size/block)
+	drew = cache(block, line)
+
+	print "Memory:"
+	print simon
+	print "Cache:"
+	printCache(drew)
+	print "CacheMem:"
+	printCacheMem(drew, simon, size, line, block)
 
 main()
