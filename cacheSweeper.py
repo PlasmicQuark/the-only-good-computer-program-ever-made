@@ -8,6 +8,7 @@ import random
 import re
 import math
 import time
+import sys
 
 # Regular expression statements for validating user input.
 regex = r"""^0x([0-9]|[a-f]){2}$"""
@@ -19,9 +20,9 @@ addressOffset = 2 # the '0x' the leads every hex memory address
 size = 256 # how big memory can be
 addressSize = 2 # the number of hex digits the user will put in
 hexIntConv = 4 # how many bits are stored within 1 hex digit
-tagIndex = 0
-validBitIndex = 1
-dataIndex = 2
+tagIndex = 0 # the index in the cache for the tag
+validBitIndex = 1 # the index in the cache for the valid bit
+dataIndex = 2 # the index in the cache leading to the list of data
 
 
 
@@ -37,15 +38,15 @@ phrase14 = ["hjhdas jra gelnj hmmi","sfsdar fqa jemhf snnk",\
 phrase15 = ["osocdp snd gejrs okkh","epedcs pqc iflap emmj",\
 			"sgsber gqe fcjpg skkh","nsndcr sqc gekis nllh"]
 
-# returns hex representation of the character inputed
+# Returns hex representation of the character inputed
 def charToHexAscii(theChar):
 	return hex(ord(theChar))
 
-# given a string, prints each individual character in hex
+# Given a string, prints each individual character in hex
 def testCharToHex(theWord):
-	 for x in range (0, len(theWord)):
-	 	print charToHexAscii(theWord[x])
-	 return
+	for x in range (0, len(theWord)):
+		print charToHexAscii(theWord[x])
+	return
 
 def fillMem(lines, block):
 	toRet = []
@@ -96,9 +97,6 @@ def fillMem(lines, block):
 	# print toRet
 	return toRet
 
-
-
-
 # Designed to take in user input, make sure it is a valid memory address,
 # and return the address they provided to be used later.
 def userInput():
@@ -116,8 +114,7 @@ def userInput():
 			#print keyphrase
 			if (solution == keyphrase):
 				print "You did it!"
-				address = -1
-				notValid = False
+				sys.exit()
 			else :
 				print "Nope!"
 		else:
@@ -139,27 +136,25 @@ def convertIntToBin(num):
 # Given a string representing a hexadecimal number, converts it to its
 # base 10 integer equivalent.
 def convertHexToInt(hexString):
-	return int(hexString)
+	return int(hexString,hexBase)
 
-
-def printSolvePhrase():
-	print solvephrase
-	return
-
-# Given the number of lines and blocks in a cahce, creates a dictionary
-# in which each key refers to a line of cache, and each line is a list
-# Given a string representing a binary number, converts it to its
+# Given a binary string, converts that into its
 # base 10 integer equivalent.
 def convertBinToInt(binString):
 	if (binString == ''):
 		return 0
-	else :
-		return int(binString, 2)
+	else:
+		return int(binString, binBase)
+
+# Prints the phrase that solves the problem.
+def printSolvePhrase():
+	print solvephrase
+	return
 
 # Given the number of lines and blocks in a cache, creates a dictionary
 # in which each key refers to which set of cache, and each line is a list
-
-# of size num_Blocks
+# containing in the 0th index the tag, in the 1st index the valid bit, and
+# in the 2nd index a list containing all of the blocks of data.
 def cache(lines, num_Blocks):
 	toRet = {}
 	itera = 0
@@ -180,13 +175,6 @@ def printCache(cch):
 	print '\n'.join(map(str, cch))
 	return
 
-def printCacheMem(cch, mem, memSize, line, block):
-	index = 0
-	toRet = ""
-	for x in range (0, memSize):
-		index = index + 1
-	return
-
 # Checks to see if an item in memory is currently in the cache. This looks at
 # the provided set and checks to see if the data is valid and if the
 # tag matches the address the user is asking for.
@@ -194,9 +182,6 @@ def inCache(tag, index, theCache):
 	toRet = False
 	numTag = convertBinToInt(tag)
 	numIndex = convertBinToInt(index)
-
-	print theCache
-	# print numIndex
 
 	if theCache[numIndex][validBitIndex] and theCache[numIndex][tagIndex] == numTag:
 		toRet = True
@@ -206,37 +191,23 @@ def inCache(tag, index, theCache):
 # Adds the provided data to the appropriate spot in cache based on
 # its memory address.
 def addToCache(tag, index, blockOff, newData, theCache):
-	# print tag
 	numTag = convertBinToInt(tag)
-	# print index
 	numIndex = convertBinToInt(index)
-	# print blockOff
 	numBlock = convertBinToInt(blockOff)
-	print "numTag: " + str(numTag)
-	print "numIndex: " + str(numIndex)
-	print "numBlock: " + str(numBlock)
-	# print theCache[numIndex]
-	# print theCache[numIndex][dataIndex]
-	# print theCache[numIndex][dataIndex][numBlock]
 	theCache[numIndex][validBitIndex] = 1
 	theCache[numIndex][tagIndex] = numTag
 	theCache[numIndex][dataIndex][numBlock] = newData
 
 	return theCache
 
-# Grabs out of memory the data contained at the provided address
-def getData(addr, mem):
-	return mem[convertHexToInt(addr)]
+# Grabs out of memory the data stored at the provided address and returns it.
+def getData(mem, addr):
+	return mem[convertBinToInt(addr)]
 
 # Given a memory address and the size of the tag, gets the portion of the
 # address corresponding to the tag
 def getTag(address, tagSize):
 	return address[:int(tagSize)]
-
-def getData(mem, addr):
-	print "Address being accessed: " + str(addr)
-	print "Address in decimal: " + str(convertBinToInt(addr))
-	return mem[convertBinToInt(addr)]
 
 # Given a memory address and the size of the tag and the number of sets,
 # gets the portion of the address corresponding to the index
@@ -255,7 +226,6 @@ def main():
 	print "Through pulling data from memory into cache, you should find the keyword used to"
 	print "decrypt the message."
 	print "Here is your message. Good luck, soldier."
-	# allMem = memory(size)
 	block = random.randint(1, 8)
 	while not (block != 0 and ((block & (block - 1) == 0))):
 		block = random.randint(1, 8)
@@ -266,13 +236,8 @@ def main():
 
 	allMem = fillMem(line, block)
 
-	# print "Memory:"
-	# print allMem
-	# print "Cache:"
-
 	global keyphrase
 	keyphrase = phrase1
-
 
 	setSize = math.log(line, binBase)
 	blockOffSize = math.log(block, binBase)
@@ -282,22 +247,17 @@ def main():
 	print block
 	while True:
 		useIn = userInput()
-		if (useIn == -1):
-			break
 		tag = getTag(useIn, tagSize)
-		print tag
-		print convertBinToInt(tag)
-		print theCache[0]
 		index = getIndex(useIn, setSize, tagSize)
 		blockOff = getBlockOffset(useIn, setSize, tagSize)
 		if not inCache(tag, index, theCache):
 			print "Item not found in cache; fetching it from memory. Please wait."
 			data = getData(allMem, useIn)
-			# data = getData(useIn)
 			# time.sleep(10) # 10 sec penalty for accessing memory out of cache
 			theCache = addToCache(tag, index, blockOff, data, theCache)
 			print "Cache: "
 			print theCache
 
+	return
 
 main()
