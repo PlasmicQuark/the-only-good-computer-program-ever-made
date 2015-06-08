@@ -44,7 +44,7 @@ def testCharToHex(theWord):
 def fillMem(lines, block):
 	toRet = []
 	word = ""
-	
+
 	global solvephrase
 	if lines > 4 :
 		randIndex = random.randint(0,3)
@@ -53,7 +53,7 @@ def fillMem(lines, block):
 	else :
 		randIndex = random.randint(0,4)
 		word = keywords5[randIndex]
-		solvephrase = phrase15[randIndex]	
+		solvephrase = phrase15[randIndex]
 
 
 	print solvephrase
@@ -191,6 +191,8 @@ def inCache(tag, index, theCache):
 
 	return toRet
 
+# Adds the provided data to the appropriate spot in cache based on
+# its memory address.
 def addToCache(tag, index, blockOff, newData, theCache):
 	numTag = convertBinToInt(tag)
 	numIndex = convertBinToInt(index)
@@ -201,6 +203,10 @@ def addToCache(tag, index, blockOff, newData, theCache):
 	theCache[numIndex][dataIndex][numBlock] = newData
 
 	return theCache
+
+# Grabs out of memory the data contained at the provided address
+def getData(addr, mem):
+	return mem[convertHexToInt(addr)]
 
 # Given a memory address and the size of the tag, gets the portion of the
 # address corresponding to the tag
@@ -246,7 +252,7 @@ def main():
 	# print convertHex(userInput())
 	# print convertBin(userInput())
 
-	
+
 
 	# print "Memory:"
 	# print allMem
@@ -284,7 +290,7 @@ def main():
 		blockOff = getBlockOffset(useIn, setSize, tagSize)
 		if not inCache(tag, index, theCache):
 			print "Item not found in cache; fetching it from memory. Please wait."
-			data = getData()
+			data = getData(useIn)
 			time.sleep(10) # 10 sec penalty for accessing memory out of cache
 			theCache = addToCache(tag, index, blockOff, data, theCache)
 			print "Cache: "
