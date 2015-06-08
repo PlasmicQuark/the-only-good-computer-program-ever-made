@@ -41,6 +41,18 @@ def convertBin(binString):
 def convertHex(hexString):
 	return int(hexString, hexBase)
 
+# Given the number of lines and blocks in a cahce, creates a dictionary
+# in which each key refers to a line of cache, and each line is a list
+# of size num_Blocks
+def makeKeys(lines, num_Blocks):
+	toRet = {}
+	itera = 0
+	while (itera < lines):
+		toRet[itera] = []
+		itera += num_Blocks
+
+	return toRet
+
 # Generates a cache with each line having the number of blocks provided.
 def cache(block, line):
 	bl = []
@@ -79,16 +91,18 @@ def main():
 	print convertHex(userInput())
 	print convertBin(userInput())
 
-	simon = memory(size)
-	block = random.randint(1, 8)
-	line = random.randint(1, size/block)
-	drew = cache(block, line)
+	allMem = memory(size)
+	# block = random.randint(1, 8)
+	# line = random.randint(1, size/block)
+	block = 1
+	line = 16
+	theCache = cache(block, line)
 
 	print "Memory:"
-	print simon
+	print allMem
 	print "Cache:"
-	printCache(drew)
+	printCache(theCache)
 	print "CacheMem:"
-	printCacheMem(drew, simon, size, line, block)
+	printCacheMem(theCache, allMem, size, line, block)
 
 main()
